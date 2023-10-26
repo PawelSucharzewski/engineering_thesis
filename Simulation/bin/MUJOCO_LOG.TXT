@@ -1,0 +1,93 @@
+Wed Oct 25 20:33:06 2023
+ERROR: Could not open activation key file mjkey.txt
+
+Wed Oct 25 20:33:39 2023
+ERROR: Could not open activation key file mjkey.txt
+
+Wed Oct 25 20:34:00 2023
+ERROR: Could not open activation key file mjkey.txt
+
+Wed Oct 25 20:40:18 2023
+ERROR: Could not open activation key file mjkey.txt
+
+Wed Oct 25 20:44:22 2023
+ERROR: Load model error: XML parse error at line 0, column 0:
+Failed to open file
+
+
+Wed Oct 25 23:37:43 2023
+ERROR: Load model error: XML parse error at line 0, column 0:
+Failed to open file
+
+
+Thu Oct 26 00:06:25 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 6. The simulation is unstable. Time = 0.6960.
+
+Thu Oct 26 00:06:38 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 6. The simulation is unstable. Time = 0.6960.
+
+Thu Oct 26 00:07:23 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 6. The simulation is unstable. Time = 0.7580.
+
+Thu Oct 26 00:15:33 2023
+ERROR: Load model error: XML Error: attribute 'range' does not have enough data
+Element 'spatial', line 31, column 5
+
+
+Thu Oct 26 00:19:02 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 6.3480.
+
+Thu Oct 26 00:22:50 2023
+ERROR: Load model error: Error: free joint can only be used on top level
+Object name = weight, id = 2, line = 20, column = 7
+
+Thu Oct 26 00:39:58 2023
+ERROR: Load model error: XML parse error at line 26, column 7:
+Error reading end tag.
+
+
+Thu Oct 26 00:54:12 2023
+ERROR: Load model error: XML Error: Schema violation: unrecognized attribute: 'euler'
+
+Element 'joint', line 21, column 9
+
+
+Thu Oct 26 00:54:44 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 14.6960.
+
+Thu Oct 26 00:55:09 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.1520.
+
+Thu Oct 26 00:55:27 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.2460.
+
+Thu Oct 26 00:55:57 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.6160.
+
+Thu Oct 26 01:05:26 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 7.9780.
+
+Thu Oct 26 01:05:36 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.6080.
+
+Thu Oct 26 01:05:47 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.7260.
+
+Thu Oct 26 01:06:06 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 1. The simulation is unstable. Time = 7.9780.
+
+Thu Oct 26 01:06:19 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.8340.
+
+Thu Oct 26 01:06:40 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.3160.
+
+Thu Oct 26 01:06:52 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 2.7600.
+
+Thu Oct 26 01:07:47 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 12.2980.
+
+Thu Oct 26 01:11:28 2023
+WARNING: Nan, Inf or huge value in QACC at DOF 0. The simulation is unstable. Time = 12.2980.
+
