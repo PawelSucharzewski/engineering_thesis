@@ -103,6 +103,32 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
     mjv_moveCamera(m, mjMOUSE_ZOOM, 0, -0.05*yoffset, &scn, &cam);
 }
 
+double getZRotationAngle(mjModel* model, mjData* data, const char* body_name) {
+    // Znajdź indeks ciała na podstawie jego nazwy
+    int body_id = mj_name2id(model, mjOBJ_BODY, body_name);
+
+    // Symulacja
+    mj_forward(model, data);
+
+    // Quaternion reprezentujący rotację ciała
+    double quaternion[4];
+    for (int i = 0; i < 4; i++) {
+        quaternion[i] = data->xquat[4 * body_id + i];
+    }
+
+    // Oblicz macierz rotacji z quaterniona
+    double rotation_matrix[9];
+    mju_quat2Mat(rotation_matrix, quaternion);
+
+    // Oblicz kąt obrotu wokół osi Z
+    double angle = atan2(rotation_matrix[3], rotation_matrix[0]);
+
+    // Przelicz kąt z radianów na stopnie
+    angle = angle * 180.0 / 3.14159265359;
+
+    return angle;
+}
+
 
 // main function
 int main(int argc, const char** argv)
@@ -110,7 +136,7 @@ int main(int argc, const char** argv)
 
     // activate software
     mj_activate("mjkey.txt");
-
+    int x;
 
     // load and compile model
     char error[1000] = "Could not load binary model";
@@ -153,7 +179,6 @@ int main(int argc, const char** argv)
     glfwSetCursorPosCallback(window, mouse_move);
     glfwSetMouseButtonCallback(window, mouse_button);
     glfwSetScrollCallback(window, scroll);
-
     // double arr_view[] = {89.608063, -11.588379, 5, 0.000000, 0.000000, 0.000000};
     // cam.azimuth = arr_view[0];
     // cam.elevation = arr_view[1];
@@ -161,10 +186,10 @@ int main(int argc, const char** argv)
      //cam.lookat[0] = arr_view[3];
      //cam.lookat[1] = arr_view[4];
     // cam.lookat[2] = arr_view[5];
-    d->qpos[2] = 10;
-    d->qvel[0] = 1;
-    d->qvel[3]= 0.00001;
-    
+    //d->qpos[2] = 0;
+    //d->qpos[3] = 5;
+    //d->qpos[2] = 5;
+    double z_rotation_angle = getZRotationAngle(m, d, "parachute");
     // use the first while condition if you want to simulate for a period.
     while( !glfwWindowShouldClose(window))
     {
@@ -172,12 +197,20 @@ int main(int argc, const char** argv)
         //  Assuming MuJoCo can simulate faster than real-time, which it usually can,
         //  this loop will finish on time for the next frame to be rendered at 60 fps.
         //  Otherwise add a cpu timer and exit this loop when it is time to render.
-        mjtNum simstart = d->time;
+        mjtNum simstart = d->time;  
         while( d->time - simstart < 1.0/60.0 )
         {
             mj_step(m, d);
-            d->qfrc_applied[2] = 0.4;
-            mj_printData(m,d,"dupa");
+            d->qfrc_applied[2] = 5;
+            mj_printData(m,d,"dupa");  
+             z_rotation_angle = getZRotationAngle(m, d, "parachute");
+             printf("Kąt obotu = %f\n",z_rotation_angle);
+             if(x == 10){
+             d->qvel[1] = sin(z_rotation_angle);
+             d->qvel[0] = cos(z_rotation_angle);
+             x = 0;
+             }
+             x++;
         }
 
        // get framebuffer viewport
@@ -187,7 +220,7 @@ int main(int argc, const char** argv)
           // update scene and render
         cam.lookat[0] = d->qpos[0];
         cam.lookat[1] = d->qpos[1];
-        cam.lookat[2] = d->qpos[2] + 5;
+        cam.lookat[2] = d->qpos[2];
         mjv_updateScene(m, d, &opt, NULL, &cam, mjCAT_ALL, &scn);
         mjr_render(viewport, &scn, &con);
         //printf("{%f, %f, %f, %f, %f, %f};\n",cam.azimuth,cam.elevation, cam.distance,cam.lookat[0],cam.lookat[1],cam.lookat[2]);
@@ -216,3 +249,7 @@ int main(int argc, const char** argv)
 
     return 1;
 }
+
+// Dodać referencje do pracy 
+// Zmniejszyć model do rzeczywistych rozmiarów
+// 8
