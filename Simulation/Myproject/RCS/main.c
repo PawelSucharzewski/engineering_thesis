@@ -102,8 +102,7 @@ void scroll(GLFWwindow* window, double xoffset, double yoffset)
     // emulate vertical mouse motion = 5% of window height
     mjv_moveCamera(m, mjMOUSE_ZOOM, 0, -0.05*yoffset, &scn, &cam);
 }
-
-double getZRotationAngle(mjModel* model, mjData* data, const char* body_name) {
+void getRotationAngles(mjModel* model, mjData* data, const char* body_name, double angles[3]) {
     // Znajdź indeks ciała na podstawie jego nazwy
     int body_id = mj_name2id(model, mjOBJ_BODY, body_name);
 
@@ -120,13 +119,29 @@ double getZRotationAngle(mjModel* model, mjData* data, const char* body_name) {
     double rotation_matrix[9];
     mju_quat2Mat(rotation_matrix, quaternion);
 
-    // Oblicz kąt obrotu wokół osi Z
-    double angle = atan2(rotation_matrix[3], rotation_matrix[0]);
+    // Oblicz kąty obrotu w osiach x, y i z
+    angles[0] = atan2(rotation_matrix[7], rotation_matrix[8]); // Oś X
+    angles[1] = atan2(-rotation_matrix[2], sqrt(rotation_matrix[5] * rotation_matrix[5] + rotation_matrix[8] * rotation_matrix[8])); // Oś Y
+    angles[2] = atan2(rotation_matrix[3], rotation_matrix[0]); // Oś Z
 
-    // Przelicz kąt z radianów na stopnie
-    angle = angle * 180.0 / 3.14159265359;
+    // Przelicz kąty z radianów na stopnie
+    for (int i = 0; i < 3; i++) {
+        angles[i] = angles[i] * 180.0 / M_PI;
+    }
+}
+void rotateBodyAroundXAxis(mjModel* model, mjData* data, const char* body_name, double rotation_angle) {
+    // Oblicz kwaternion reprezentujący obrót wokół osi X
+    double cos_half_angle = cos(rotation_angle / 2);
+    double sin_half_angle = sin(rotation_angle / 2);
+    double quaternion[4] = {cos_half_angle, sin_half_angle, 0.0, 0.0};
 
-    return angle;
+    // Znajdź indeks ciała na podstawie jego nazwy
+    int body_id = mj_name2id(model, mjOBJ_BODY, body_name);
+
+    // Ustaw kwaternion w danych
+    for (int i = 0; i < 2; i++) {
+        data->xquat[4 * body_id + i] = quaternion[i];
+    }
 }
 
 
@@ -136,7 +151,10 @@ int main(int argc, const char** argv)
 
     // activate software
     mj_activate("mjkey.txt");
-    int x;
+    int x = 0;
+    int y = 0;
+    double angles[3];
+    double endTime;
 
     // load and compile model
     char error[1000] = "Could not load binary model";
@@ -179,17 +197,6 @@ int main(int argc, const char** argv)
     glfwSetCursorPosCallback(window, mouse_move);
     glfwSetMouseButtonCallback(window, mouse_button);
     glfwSetScrollCallback(window, scroll);
-    // double arr_view[] = {89.608063, -11.588379, 5, 0.000000, 0.000000, 0.000000};
-    // cam.azimuth = arr_view[0];
-    // cam.elevation = arr_view[1];
-    // cam.distance = arr_view[2];
-     //cam.lookat[0] = arr_view[3];
-     //cam.lookat[1] = arr_view[4];
-    // cam.lookat[2] = arr_view[5];
-    //d->qpos[2] = 0;
-    //d->qpos[3] = 5;
-    //d->qpos[2] = 5;
-    double z_rotation_angle = getZRotationAngle(m, d, "parachute");
     // use the first while condition if you want to simulate for a period.
     while( !glfwWindowShouldClose(window))
     {
@@ -202,12 +209,22 @@ int main(int argc, const char** argv)
         {
             mj_step(m, d);
             d->qfrc_applied[2] = 5;
-            mj_printData(m,d,"dupa");  
-             z_rotation_angle = getZRotationAngle(m, d, "parachute");
-             printf("Kąt obotu = %f\n",z_rotation_angle);
+            if(d->time < 5) d->qfrc_applied[3] = 0.01;
+            else if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
+            else d->qfrc_applied[3] = 0.01;
+             /* if(d->time > 5){
+                if(angles[0] > 0.01) d->qfrc_applied[3] = -0.01;
+                if(angles[0] < -0.01) d->qfrc_applied[3] = 0.01;
+                else d->qfrc_applied[3] = 0; 
+            }
+            */
+            getRotationAngles(m, d, "parachute", angles);
+             printf("Kąt obotu = %f\n",angles[0]);
              if(x == 10){
-             d->qvel[1] = sin(z_rotation_angle);
-             d->qvel[0] = cos(z_rotation_angle);
+             d->qvel[1] = sin(angles[2] * (M_PI / 180));
+             d->qvel[0] = cos(angles[2]* (M_PI / 180));
+             d->qvel[7] = 0.9*sin(angles[2] * (M_PI / 180));
+             d->qvel[6] = 0.9*cos(angles[2]* (M_PI / 180));
              x = 0;
              }
              x++;
@@ -250,6 +267,4 @@ int main(int argc, const char** argv)
     return 1;
 }
 
-// Dodać referencje do pracy 
-// Zmniejszyć model do rzeczywistych rozmiarów
-// 8
+// czas trwania jednego kroku symulacji to 0,002 sekundy !!!!

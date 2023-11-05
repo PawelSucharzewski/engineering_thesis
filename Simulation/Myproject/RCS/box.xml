@@ -1,56 +1,57 @@
-<mujoco>
- <worldbody>
-  <light diffuse=".5 .5 .5" pos="0 0 1" dir="0 0 -1"/>
-  <geom type="plane" size="20 20 0.1" rgba="0 0 0.9 1"/>
-  <body name="parachute" pos = "0 0 100" euler = "1 0 0" >
-     <freejoint/>
-      <geom name="Parahute_module_center" pos="0 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
-      <geom name="Parahute_module_left_one" pos="0 0.03982568852 -0.00175" euler="-5 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
-      <geom name="Parahute_module_left_two" pos="0 0.07947706556 -0.00702" euler="-10 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
-      <geom name="Parahute_module_left_three" pos="0 0.11843119668 -0.016074" euler="-15 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
-      <site name="Control_lines_parachute_left_front" pos="0.1 0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
-      <site name="Control_lines_parachute_left_mid" pos="0 0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
-      <site name="Control_lines_parachute_left_rear" pos="-0.1 0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
-      <geom name="Parahute_module_right_one" pos="0 -0.03982568852 -0.00175" euler="5 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
-      <geom name="Parahute_module_right_two" pos="0 -0.07947706556 -0.00702" euler="10 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
-      <geom name="Parahute_module_right_three" pos="0 -0.11843119668 -0.016074" euler="15 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>	
-      <site name="Control_lines_parachute_right_front" pos="0.1 -0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
-      <site name="Control_lines_parachute_right_mid" pos="0 -0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
-      <site name="Control_lines_parachute_right_rear" pos="-0.1 -0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
-    </body>
-  <body name="weight" pos="0 0 99.85">
+  <mujoco>
+  <worldbody>
+    <light diffuse=".5 .5 .5" pos="0 0 1" dir="0 0 -1"/>
+    <geom type="plane" size="2000 2000 0.1" rgba="0 0 0.9 1"/>
+    <body name="parachute" pos = "0 0 1000" >
+    
       <freejoint/>
-        <geom name="Module_box" type="box" size="0.04 0.04 0.04" mass=".5"/>
-        <site name="Face" pos="0.04 0 0" size="0.001" rgba="0.9 0 0 1"/>
-        <site name="Control_lines_left" pos="0 0.05 0.04" size="0.001" rgba="0 0.9 0 1"/>
-        <site name="Control_lines_right" pos="0 -0.05 0.04" size="0.001" rgba="0 0.9 0 1"/>
-      </body>  
- </worldbody>
- 
- <tendon>
-    <spatial limited = "true" range = "0 0.3">
-      <site site="Control_lines_left"/>
-      <site site="Control_lines_parachute_left_front"/>
-    </spatial>
-    <spatial limited = "true" range = "0 0.3">
-      <site site="Control_lines_left"/>
-      <site site="Control_lines_parachute_left_mid"/>
-    </spatial>
-    <spatial limited = "true" range = "0 0.3">
-      <site site="Control_lines_left"/>
-      <site site="Control_lines_parachute_left_rear"/>
-    </spatial>
-    <spatial limited = "true" range = "0 0.3">
-      <site site="Control_lines_right"/>
-      <site site="Control_lines_parachute_right_front"/>
-    </spatial>
-    <spatial limited = "true" range = "0 0.3">
-      <site site="Control_lines_right"/>
-      <site site="Control_lines_parachute_right_mid"/>
-    </spatial>
-    <spatial limited = "true" range = "0 0.3">
-      <site site="Control_lines_right"/>
-      <site site="Control_lines_parachute_right_rear"/>
-    </spatial>
-  </tendon>
-</mujoco>
+        <geom name="Parahute_module_center" pos="0 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
+        <geom name="Parahute_module_left_one" pos="0 0.03982568852 -0.00175" euler="-5 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
+        <geom name="Parahute_module_left_two" pos="0 0.07947706556 -0.00702" euler="-10 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
+        <geom name="Parahute_module_left_three" pos="0 0.11843119668 -0.016074" euler="-15 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
+        <site name="Control_lines_parachute_left_front" pos="0.1 0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
+        <site name="Control_lines_parachute_left_mid" pos="0 0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
+        <site name="Control_lines_parachute_left_rear" pos="-0.1 0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
+        <geom name="Parahute_module_right_one" pos="0 -0.03982568852 -0.00175" euler="5 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
+        <geom name="Parahute_module_right_two" pos="0 -0.07947706556 -0.00702" euler="10 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>
+        <geom name="Parahute_module_right_three" pos="0 -0.11843119668 -0.016074" euler="15 0 0" type="box" size="0.1 0.02 0.001" mass="0.01"/>	
+        <site name="Control_lines_parachute_right_front" pos="0.1 -0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
+        <site name="Control_lines_parachute_right_mid" pos="0 -0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
+        <site name="Control_lines_parachute_right_rear" pos="-0.1 -0.13843119668 -0.02125038091" size="0.01" rgba="0 0.9 0 1"/>
+      </body>
+    <body name="weight" pos="0 0 999.85">
+          <freejoint/>
+          <geom name="Module_box" type="box" size="0.04 0.04 0.04" mass=".5"/>
+          <site name="Face" pos="0.04 0 0" size="0.001" rgba="0.9 0 0 1"/>
+          <site name="Control_lines_left" pos="0 0.05 0.04" size="0.001" rgba="0 0.9 0 1"/>
+          <site name="Control_lines_right" pos="0 -0.05 0.04" size="0.001" rgba="0 0.9 0 1"/>
+        </body>  
+  </worldbody>
+  
+  <tendon>
+      <spatial limited = "true" range = "0 0.3">
+        <site site="Control_lines_left"/>
+        <site site="Control_lines_parachute_left_front"/>
+      </spatial>
+      <spatial limited = "true" range = "0 0.3">
+        <site site="Control_lines_left"/>
+        <site site="Control_lines_parachute_left_mid"/>
+      </spatial>
+      <spatial limited = "true" range = "0 0.3">
+        <site site="Control_lines_left"/>
+        <site site="Control_lines_parachute_left_rear"/>
+      </spatial>
+      <spatial limited = "true" range = "0 0.3">
+        <site site="Control_lines_right"/>
+        <site site="Control_lines_parachute_right_front"/>
+      </spatial>
+      <spatial limited = "true" range = "0 0.3">
+        <site site="Control_lines_right"/>
+        <site site="Control_lines_parachute_right_mid"/>
+      </spatial>
+      <spatial limited = "true" range = "0 0.3">
+        <site site="Control_lines_right"/>
+        <site site="Control_lines_parachute_right_rear"/>
+      </spatial>
+    </tendon>
+  </mujoco>
