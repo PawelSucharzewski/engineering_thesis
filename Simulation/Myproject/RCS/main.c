@@ -12,7 +12,6 @@
 
 
 char filename[] = "../Myproject/RCS/box.xml";
-
 // MuJoCo data structures
 mjModel* m = NULL;                  // MuJoCo model
 mjData* d = NULL;                   // MuJoCo data
@@ -126,7 +125,7 @@ void getRotationAngles(mjModel* model, mjData* data, const char* body_name, doub
 
     // Przelicz kąty z radianów na stopnie
     for (int i = 0; i < 3; i++) {
-        angles[i] = angles[i] * 180.0 / M_PI;
+        angles[i] = angles[i] * 180.0 / M_PI;           
     }
 }
 void rotateBodyAroundXAxis(mjModel* model, mjData* data, const char* body_name, double rotation_angle) {
@@ -155,6 +154,8 @@ int main(int argc, const char** argv)
     int y = 0;
     double angles[3];
     double endTime;
+    FILE *fptr;
+    fptr = fopen("../Myproject/RCS/data.txt", "w");
 
     // load and compile model
     char error[1000] = "Could not load binary model";
@@ -208,10 +209,17 @@ int main(int argc, const char** argv)
         while( d->time - simstart < 1.0/60.0 )
         {
             mj_step(m, d);
-            d->qfrc_applied[2] = 5;
-            if(d->time < 5) d->qfrc_applied[3] = 0.01;
-            else if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
-            else d->qfrc_applied[3] = 0.01;
+            d->qfrc_applied[2] = 3;
+            if(d->time < 5) {
+                if(angles[0] < 2) d->qfrc_applied[3] = 0.04;
+                else d->qfrc_applied[3] = -0.04;
+            }
+            else{
+                if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
+                else d->qfrc_applied[3] = 0.01;
+            }
+           // else if(angles[0] > 0) d->qfrc_applied[3] = -0.001;
+            //else d->qfrc_applied[3] = 0.001;
              /* if(d->time > 5){
                 if(angles[0] > 0.01) d->qfrc_applied[3] = -0.01;
                 if(angles[0] < -0.01) d->qfrc_applied[3] = 0.01;
@@ -219,7 +227,8 @@ int main(int argc, const char** argv)
             }
             */
             getRotationAngles(m, d, "parachute", angles);
-             printf("Kąt obotu = %f\n",angles[0]);
+            fprintf(fptr, "%f, %f, %f;\n",d->time,angles[0],angles[2]);
+             printf("%f, %f, %f;\n",d->time,angles[0],angles[2]);
              if(x == 10){
              d->qvel[1] = sin(angles[2] * (M_PI / 180));
              d->qvel[0] = cos(angles[2]* (M_PI / 180));
@@ -262,7 +271,8 @@ int main(int argc, const char** argv)
     // terminate GLFW (crashes with Linux NVidia drivers)
     #if defined(__APPLE__) || defined(_WIN32)
         glfwTerminate();
-    #endif
+    #endif  
+    fclose(fptr);
 
     return 1;
 }
