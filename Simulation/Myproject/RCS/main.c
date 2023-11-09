@@ -122,10 +122,10 @@ void getRotationAngles(mjModel* model, mjData* data, const char* body_name, doub
     angles[0] = atan2(rotation_matrix[7], rotation_matrix[8]); // Oś X
     angles[1] = atan2(-rotation_matrix[2], sqrt(rotation_matrix[5] * rotation_matrix[5] + rotation_matrix[8] * rotation_matrix[8])); // Oś Y
     angles[2] = atan2(rotation_matrix[3], rotation_matrix[0]); // Oś Z
-
+    
     // Przelicz kąty z radianów na stopnie
     for (int i = 0; i < 3; i++) {
-        angles[i] = angles[i] * 180.0 / M_PI;           
+        angles[i] = angles[i] * 180.0 / M_PI;      
     }
 }
 void rotateBodyAroundXAxis(mjModel* model, mjData* data, const char* body_name, double rotation_angle) {
@@ -209,7 +209,7 @@ int main(int argc, const char** argv)
         while( d->time - simstart < 1.0/60.0 )
         {
             mj_step(m, d);
-            d->qfrc_applied[2] = 3;
+            d->qfrc_applied[2] = 5;
             if(d->time < 5) {
                 if(angles[0] < 2) d->qfrc_applied[3] = 0.04;
                 else d->qfrc_applied[3] = -0.04;
@@ -227,6 +227,7 @@ int main(int argc, const char** argv)
             }
             */
             getRotationAngles(m, d, "parachute", angles);
+            if(angles[2] < 0 && d->time > 1.5) angles[2] += 360;
             fprintf(fptr, "%f, %f, %f;\n",d->time,angles[0],angles[2]);
              printf("%f, %f, %f;\n",d->time,angles[0],angles[2]);
              if(x == 10){
