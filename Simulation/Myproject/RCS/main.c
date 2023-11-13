@@ -2,7 +2,7 @@
 
 #include<stdbool.h> //for bool
 //#include<unistd.h> //for usleep
-//#include <math.h>
+#include <math.h>
 
 #include "mujoco.h"
 #include "glfw3.h"
@@ -10,6 +10,7 @@
 #include "stdlib.h"
 #include "string.h"
 
+#define STEP_TIME 0.002
 
 char filename[] = "../Myproject/RCS/box.xml";
 // MuJoCo data structures
@@ -149,6 +150,17 @@ int main(int argc, const char** argv)
 {
 
     // activate software
+    double positionError = 0;
+    double setPosition = 0;
+    double Kp = 0.001;
+    double Ki = 0.000000001;
+    double Kd = 0.005;
+    double P_Part = 0;
+    double I_Part = 0;
+    double D_Part = 0;
+    double lastPositionError = 0;
+    double regulationOutput;
+    double funkcja = 0;
     mj_activate("mjkey.txt");
     int x = 0;
     int y = 0;
@@ -210,14 +222,14 @@ int main(int argc, const char** argv)
         {
             mj_step(m, d);
             d->qfrc_applied[2] = 5;
-            if(d->time < 5) {
-                if(angles[0] < 2) d->qfrc_applied[3] = 0.04;
-                else d->qfrc_applied[3] = -0.04;
-            }
-            else{
-                if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
-                else d->qfrc_applied[3] = 0.01;
-            }
+           // if(d->time < 5) {
+           //     if(angles[0] < 2) d->qfrc_applied[3] = 0.04;
+            //    else d->qfrc_applied[3] = -0.04;
+           // }
+            //else{
+             //   if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
+              //  else d->qfrc_applied[3] = 0.01;
+           // }
            // else if(angles[0] > 0) d->qfrc_applied[3] = -0.001;
             //else d->qfrc_applied[3] = 0.001;
              /* if(d->time > 5){
@@ -227,9 +239,11 @@ int main(int argc, const char** argv)
             }
             */
             getRotationAngles(m, d, "parachute", angles);
-            if(angles[2] < 0 && d->time > 1.5) angles[2] += 360;
-            fprintf(fptr, "%f, %f, %f;\n",d->time,angles[0],angles[2]);
-             printf("%f, %f, %f;\n",d->time,angles[0],angles[2]);
+           fprintf(fptr, "%f, %f, %f;\n",d->time,setPosition,angles[2]);
+             //printf("%f, %f, %f;\n",d->time,angles[0],angles[2]);
+            setPosition = 45 * exp(-0.03 * d->time) * sin(0.05 * d->time);
+            //fprintf(fptr, "%f, %f;\n",d->time,funkcja);
+            printf("%f, %f, %f, %f;\n",d->time,setPosition,angles[2], regulationOutput);
              if(x == 10){
              d->qvel[1] = sin(angles[2] * (M_PI / 180));
              d->qvel[0] = cos(angles[2]* (M_PI / 180));
@@ -238,6 +252,32 @@ int main(int argc, const char** argv)
              x = 0;
              }
              x++;
+            /* PID regulation*/
+
+            if (positionError > 0 && lastPositionError < 0) {
+            I_Part = 0;  // Zerowanie składowej całkującej w przypadku zmiany znaku
+            }
+
+            if(setPosition > 0 && angles[2] < 0){
+                positionError = setPosition + angles[2];
+            }
+            else{
+                positionError = setPosition - angles[2];
+            }
+            /* P */
+            P_Part = positionError;
+            /* I */
+            I_Part += positionError/STEP_TIME;
+            /* D */
+            D_Part = (positionError - lastPositionError)/STEP_TIME;
+            /* Calculete regulation*/
+            regulationOutput = Kp * P_Part + Ki * I_Part + Kd * D_Part;
+            lastPositionError = positionError;
+            if(regulationOutput > 0.04) regulationOutput= 0.04;
+            if(regulationOutput < -0.04) regulationOutput= -0.04;
+           // printf("%f \n", regulationOutput);
+            d->qfrc_applied[3] = regulationOutput;
+            /* END OF PID*/
         }
 
        // get framebuffer viewport
@@ -279,3 +319,4 @@ int main(int argc, const char** argv)
 }
 
 // czas trwania jednego kroku symulacji to 0,002 sekundy !!!!
+// Prędkośc opadania wynosi 7.14336814995 m/s
