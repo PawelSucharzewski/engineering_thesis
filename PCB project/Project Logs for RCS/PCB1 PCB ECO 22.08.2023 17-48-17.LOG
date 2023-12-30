@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=DIO0 Pin=U1-29
+Removed Pin From Net: NetName=LoRa_Reset Pin=U1-30
+Added Pin To Net: NetName=LoRa_Reset Pin=U1-29
+Added Pin To Net: NetName=DIO0 Pin=U1-30
