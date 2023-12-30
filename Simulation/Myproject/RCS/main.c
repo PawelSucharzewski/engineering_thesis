@@ -197,7 +197,7 @@ int main(int argc, const char** argv)
     glfwMakeContextCurrent(window);
     glfwSwapInterval(1);
 
-    // initialize visualization data structures
+    // initialize visualization data structuresznacznego przekroc oraz
     mjv_defaultCamera(&cam);
     mjv_defaultOption(&opt);
     mjv_defaultScene(&scn);
@@ -222,28 +222,31 @@ int main(int argc, const char** argv)
         {
             mj_step(m, d);
             d->qfrc_applied[2] = 5;
-           // if(d->time < 5) {
-           //     if(angles[0] < 2) d->qfrc_applied[3] = 0.04;
-            //    else d->qfrc_applied[3] = -0.04;
-           // }
-            //else{
-             //   if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
-              //  else d->qfrc_applied[3] = 0.01;
-           // }
-           // else if(angles[0] > 0) d->qfrc_applied[3] = -0.001;
-            //else d->qfrc_applied[3] = 0.001;
-             /* if(d->time > 5){
-                if(angles[0] > 0.01) d->qfrc_applied[3] = -0.01;
-                if(angles[0] < -0.01) d->qfrc_applied[3] = 0.01;
-                else d->qfrc_applied[3] = 0; 
-            }
-            */
+//            if(d->time < 5) {
+//                if(angles[0] < 1) d->qfrc_applied[3] = 0.04;
+//                else d->qfrc_applied[3] = -0.04;
+//            }
+//           // else{
+//           //     if(angles[0] > 0) d->qfrc_applied[3] = -0.01;
+//           //   else d->qfrc_applied[3] = 0.01;
+//           // }
+//           // else if(angles[0] > 0) d->qfrc_applied[3] = -0.001;
+//            //else d->qfrc_applied[3] = 0.001;
+//            else{
+//                if(angles[0] > 0.01) d->qfrc_applied[3] = -0.01;
+//                else if(angles[0] < -0.01) d->qfrc_applied[3] = 0.01;
+//                else{
+//                     d->qfrc_applied[3] = 0; 
+//                }
+//            }
+            
             getRotationAngles(m, d, "parachute", angles);
+            //if(angles[2] < 0 && d->time > 5) angles[2] += 360;
            fprintf(fptr, "%f, %f, %f;\n",d->time,setPosition,angles[2]);
-             //printf("%f, %f, %f;\n",d->time,angles[0],angles[2]);
-            setPosition = 45 * exp(-0.03 * d->time) * sin(0.05 * d->time);
-            //fprintf(fptr, "%f, %f;\n",d->time,funkcja);
-            printf("%f, %f, %f, %f;\n",d->time,setPosition,angles[2], regulationOutput);
+            // printf("%f, %f, %f, %f;\n",d->time,angles[0],angles[2],d->qfrc_applied[3]);
+            setPosition = 30; // 45 * exp(-0.03 * d->time ) * sin(0.2 * d->time);
+           // fprintf(fptr, "%f, %f;\n",d->time,funkcja);
+           printf("%f, %f, %f, %f;\n",d->time,setPosition,angles[2], regulationOutput);
              if(x == 10){
              d->qvel[1] = sin(angles[2] * (M_PI / 180));
              d->qvel[0] = cos(angles[2]* (M_PI / 180));
@@ -254,16 +257,9 @@ int main(int argc, const char** argv)
              x++;
             /* PID regulation*/
 
-            if (positionError > 0 && lastPositionError < 0) {
-            I_Part = 0;  // Zerowanie składowej całkującej w przypadku zmiany znaku
-            }
-
-            if(setPosition > 0 && angles[2] < 0){
-                positionError = setPosition + angles[2];
-            }
-            else{
+ 
                 positionError = setPosition - angles[2];
-            }
+        
             /* P */
             P_Part = positionError;
             /* I */
